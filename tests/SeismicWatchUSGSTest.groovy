@@ -61,8 +61,11 @@ def response = { List features, int status = 200 ->
   ]
 }
 
-driver.initialize()
+driver.installed()
+assert requests.empty
+assert readings.watchStatus == 'setup'
 assert readings.numberOfButtons == 2
+driver.initialize()
 assert jobs.refresh.cron == '0 */10 * ? * *'
 assert requests.size() == 1
 def firstRequest = requests[-1]

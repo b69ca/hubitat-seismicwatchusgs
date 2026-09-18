@@ -23,7 +23,9 @@ This is a catalog monitor, not an earthquake early-warning system. USGS events c
 2. Import the [raw driver](https://raw.githubusercontent.com/b69ca/hubitat-seismicwatchusgs/main/SeismicWatchUSGS.groovy), or paste its contents, and click **Save**.
 3. Open **Devices → Add Device → Virtual** and select **Seismic Watch (USGS)** from the user drivers.
 4. Give the device a name such as `Seismic Watch`, open its **Preferences**, review the location disclosure and filters, then click **Save Preferences**.
-5. Check the command page. `watchStatus` should become `ready` after the first request.
+5. Check the command page. `watchStatus` should move from `setup` to `ready` after the first request.
+
+Creating the virtual device alone does not send coordinates or schedule requests. The driver remains in `setup` until you save preferences or deliberately press **Initialize**. This gives you a chance to read the disclosure and choose custom coordinates first.
 
 The first successful check normally establishes a baseline without sending an alert. This prevents every event already inside the lookback from looking new. Enable **Notify for the newest event on the first successful check** if you want one initial notification.
 
@@ -88,7 +90,7 @@ Use button 1 for routine logging or a quiet notification. Use button 2 for a mor
 
 | Attribute | Meaning |
 | --- | --- |
-| `watchStatus` | `initializing`, `ready`, or `error`. |
+| `watchStatus` | `setup` (preferences have not been accepted), `initializing`, `ready`, or `error`. |
 | `earthquakeState` | `none`, `recent`, or `priority`; considers all events inside the recent-state interval. |
 | `eventCount` | Number of valid results currently retained. |
 | `lastChecked` | Time the most recent request started. |

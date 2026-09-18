@@ -27,7 +27,7 @@ metadata {
     command "testRoutineEvent"
     command "testPriorityEvent"
 
-    attribute "watchStatus", "enum", ["initializing", "ready", "error"]
+    attribute "watchStatus", "enum", ["setup", "initializing", "ready", "error"]
     attribute "earthquakeState", "enum", ["none", "recent", "priority"]
     attribute "eventCount", "number"
     attribute "lastChecked", "string"
@@ -93,10 +93,16 @@ metadata {
 }
 
 def installed() {
-  initialize()
+  unschedule()
+  state.generation = (state.generation ?: 0L) + 1L
+  state.inFlight = null
+  state.configured = false
+  sendEvent(name: "numberOfButtons", value: 2)
+  sendChanged("watchStatus", "setup")
 }
 
 def updated() {
+  state.configured = true
   initialize()
 }
 
@@ -106,6 +112,7 @@ def uninstalled() {
 
 def initialize() {
   unschedule()
+  state.configured = true
   state.generation = (state.generation ?: 0L) + 1L
   state.inFlight = null
   sendEvent(name: "numberOfButtons", value: 2)
@@ -129,6 +136,11 @@ def logsOff() {
 }
 
 def refresh() {
+  if (state.configured != true) {
+    sendChanged("watchStatus", "setup")
+    return
+  }
+
   if (state.inFlight) {
     if (now() - ((state.requestStarted ?: 0L) as Long) < 120000L) return
     state.inFlight = null

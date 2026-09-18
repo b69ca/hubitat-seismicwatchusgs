@@ -8,4 +8,5 @@
 - Latest, strongest, and nearest event attributes with local distance and direction calculations.
 - Routine and priority Pushable Button events for Hubitat automations.
 - Silent first-run baseline, deduplication, magnitude-revision detection, and stale-callback protection.
+- Explicit setup state prevents any coordinate transmission when the virtual device is first created.
 - Automated Groovy tests and detailed privacy, automation, and interpretation documentation.
